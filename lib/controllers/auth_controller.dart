@@ -45,10 +45,9 @@ class AuthController extends GetxController {
               firstName: firstName,
               lastName: lastName,
               email: email,
-              phone: phone))
-          .whenComplete(
-              () => Get.snackbar("User Register", "User Registered Success"));
+              phone: phone));
       Get.offNamedUntil(route!, (_) => false);
+      Get.snackbar("User Register", "User Registered Success");
     } on FirebaseAuthException catch (firebaseAuthException) {
       Get.snackbar("Try Again", firebaseAuthException.message!);
     }
@@ -93,7 +92,7 @@ class AuthController extends GetxController {
   }
 
   signOutUser() async {
-    StoragePref.eraseIt();
+    await ConstantCall.box.remove('email');
     await ConstantCall.firebaseAuth.signOut();
     Get.offNamedUntil(RouteString.loginPage!, (_) => false);
     Get.snackbar("User SignOut", "User SignOut Success");
