@@ -56,7 +56,8 @@ class TextFieldFH extends StatelessWidget {
             ),
             filled: true,
             fillColor: Colors.white,
-            hintText: hinttext!),
+            hintText: hinttext!,
+            hintStyle: const TextStyle(color: Colors.black)),
       ),
     );
   }

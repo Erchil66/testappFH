@@ -7,6 +7,25 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class DialogWidgetx {
+  static loading() {
+    Get.dialog(
+      Center(
+        child: Container(
+          height: 80,
+          width: 80,
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(10)),
+          child: const Center(
+              child: CircularProgressIndicator(
+            color: Colors.blueAccent,
+          )),
+        ),
+      ),
+      barrierColor: Colors.grey.withOpacity(0.3),
+      barrierDismissible: true,
+    );
+  }
+
   static dialogForgotPass(TextEditingController? forgotpass) {
     Get.defaultDialog(
       barrierDismissible: true,

@@ -14,4 +14,12 @@ class ValidatorString {
       return null;
     }
   }
+
+  static String? dontLeavEmpty(String? text) {
+    if (text!.isEmpty) {
+      return "Please Don't leave it blank";
+    } else {
+      return null;
+    }
+  }
 }

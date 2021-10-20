@@ -7,13 +7,19 @@ class ServiceController extends GetxController {
   static ServiceController to = Get.find();
 
   final TextEditingController? email = TextEditingController(),
+      firstName = TextEditingController(),
+      lastName = TextEditingController(),
+      phone = TextEditingController(),
       passwords = TextEditingController(),
       forgotPasswordEmail = TextEditingController();
 
   registerUserEP() {
     ConstantCall.auth.registerUser(
-        email: email!.value.text,
-        password: passwords!.value.text,
+        email: email!.value.text.trim(),
+        password: passwords!.value.text.trim(),
+        firstName: firstName!.value.text,
+        lastName: lastName!.value.text,
+        phone: phone!.value.text,
         route: RouteString.mainhomePage!);
   }
 
@@ -26,9 +32,12 @@ class ServiceController extends GetxController {
 
   @override
   void onClose() {
+    Get.delete<ServiceController>();
     email!.clear();
     passwords!.clear();
-    forgotPasswordEmail!.clear();
+    phone!.clear();
+    firstName!.clear();
+    lastName!.clear();
     super.onClose();
   }
 }
