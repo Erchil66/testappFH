@@ -34,12 +34,11 @@ class CloudFirebaseFireStoreFunctions {
     }).whenComplete(() => readDataofUser(uid: uid));
   }
 
-  static Future<void> readDataofUser({String? uid}) async {
-    await CollectionFireStore.collectionReferenceUsers
-        .doc(uid)
-        .get()
-        .then((value) {
-      StoragePref.setDataJson(value);
-    }).whenComplete(() => "Print Me");
-  }
+  static Future readDataofUser({String? uid}) async =>
+      await CollectionFireStore.collectionReferenceUsers
+          .doc(uid)
+          .get()
+          .then((value) {
+        StoragePref.setDataJson(value);
+      });
 }

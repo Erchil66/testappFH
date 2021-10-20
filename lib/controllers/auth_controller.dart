@@ -3,13 +3,14 @@ import 'package:apptestfh/firestore_service/cloud_functions.dart';
 import 'package:apptestfh/route/route_string.dart';
 import 'package:apptestfh/storage/storage.dart';
 import 'package:apptestfh/widgets/diloag_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class AuthController extends GetxController {
   static AuthController to = Get.find();
   late final Rx<User?> firebaseUser;
+  final box = GetStorage();
   // late final FirebaseFirestore firebaseFirestore;
 
   @override
@@ -36,7 +37,6 @@ class AuthController extends GetxController {
       String? lastName,
       String? phone,
       String? route}) async {
-    DialogWidgetx.loading();
     try {
       await ConstantCall.firebaseAuth
           .createUserWithEmailAndPassword(email: email!, password: password!)
@@ -48,21 +48,18 @@ class AuthController extends GetxController {
               phone: phone))
           .whenComplete(
               () => Get.snackbar("User Register", "User Registered Success"));
-      Get.toNamed(route!);
+      Get.offNamedUntil(route!, (_) => false);
     } on FirebaseAuthException catch (firebaseAuthException) {
       Get.snackbar("Try Again", firebaseAuthException.message!);
     }
   }
 
   loginUser({String? email, String? password, String? route}) async {
-    DialogWidgetx.loading();
     try {
       await ConstantCall.firebaseAuth
           .signInWithEmailAndPassword(email: email!, password: password!)
-          .then((value) => CloudFirebaseFireStoreFunctions.readDataofUser(
-              uid: value.user!.uid))
           .whenComplete(() => Get.snackbar("User Login", "User Login Success"));
-      Get.toNamed(route!);
+      Get.offNamedUntil(route!, (_) => false);
     } on FirebaseAuthException catch (firebaseAuthException) {
       Get.snackbar("Try Again", firebaseAuthException.message!);
     }
@@ -83,7 +80,10 @@ class AuthController extends GetxController {
             lastName: lastName,
             uid: uid!)
         .then((value) => updateRestEmail(email: email))
-        .whenComplete(() => Get.snackbar("Update User", "Update User Success"));
+        .whenComplete(() {
+      Get.back();
+      Get.snackbar("Update User", "Update User Success");
+    });
   }
 
   forgotPasswordUser({String? email}) async {
@@ -93,10 +93,9 @@ class AuthController extends GetxController {
   }
 
   signOutUser() async {
-    DialogWidgetx.loading();
-    await StoragePref.eraseIt();
+    StoragePref.eraseIt();
     await ConstantCall.firebaseAuth.signOut();
-    Get.offAllNamed(RouteString.loginPage!);
+    Get.offNamedUntil(RouteString.loginPage!, (_) => false);
     Get.snackbar("User SignOut", "User SignOut Success");
   }
 

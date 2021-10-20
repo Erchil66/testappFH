@@ -1,21 +1,22 @@
-import 'dart:convert';
-
 import 'package:apptestfh/constatnts/constants.dart';
 import 'package:apptestfh/firestore_service/cloud_functions.dart';
-import 'package:apptestfh/firestore_service/collections.dart';
-import 'package:apptestfh/models/user.dart';
 import 'package:apptestfh/storage/storage.dart';
-import 'package:apptestfh/widgets/diloag_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class MainHomeController extends GetxController {
   static MainHomeController to = Get.find();
-
+  final emailString = '...'.obs;
+  final firstNameString = '...'.obs;
+  final lastNameString = '...'.obs;
+  final phoneString = '...'.obs;
   @override
   void onReady() {
-    storageGetDetail();
+    print(ConstantCall.firebaseAuth.currentUser!.uid);
+    CloudFirebaseFireStoreFunctions.readDataofUser(
+            uid: ConstantCall.firebaseAuth.currentUser!.uid)
+        .whenComplete(() => storageGetDetail());
     super.onReady();
   }
 
@@ -23,10 +24,6 @@ class MainHomeController extends GetxController {
       firstName = TextEditingController(),
       lastName = TextEditingController(),
       phone = TextEditingController();
-  final emailString = ''.obs;
-  final firstNameString = ''.obs;
-  final lastNameString = ''.obs;
-  final phoneString = ''.obs;
 
   updateUserDetailWithEmailAlso() async {
     ConstantCall.auth.updateUserDetailincludeEmail(
@@ -41,22 +38,18 @@ class MainHomeController extends GetxController {
         email:
             email!.value.text.isEmpty ? emailString.value : email!.value.text,
         uid: ConstantCall.firebaseAuth.currentUser!.uid);
-    StoragePref.box.listen(() {
-      storageGetDetail();
-    });
   }
 
   storageGetDetail() {
-    emailString(StoragePref.box.read(StoragePref.email!));
-    firstNameString(StoragePref.box.read(StoragePref.firstName!));
-    lastNameString(StoragePref.box.read(StoragePref.lastName!));
-    phoneString(StoragePref.box.read(StoragePref.phone!));
-    emailString(StoragePref.box.read(StoragePref.email!));
+    emailString(StoragePref.getIt(holder: StoragePref.email!));
+    firstNameString(StoragePref.getIt(holder: StoragePref.firstName!));
+    lastNameString(StoragePref.getIt(holder: StoragePref.lastName!));
+    phoneString(StoragePref.getIt(holder: StoragePref.phone!));
   }
 
   @override
   void onClose() {
-    Get.delete();
+    Get.delete<MainHomeController>();
     super.onClose();
   }
 }
