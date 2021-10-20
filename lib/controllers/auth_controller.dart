@@ -92,7 +92,7 @@ class AuthController extends GetxController {
   }
 
   signOutUser() async {
-    await ConstantCall.box.remove('email');
+    await StoragePref.eraseIt();
     await ConstantCall.firebaseAuth.signOut();
     Get.offNamedUntil(RouteString.loginPage!, (_) => false);
     Get.snackbar("User SignOut", "User SignOut Success");
