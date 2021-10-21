@@ -4,6 +4,6 @@ import 'package:get/get.dart';
 class MainHomeBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => MainHomeController(), fenix: true);
+    Get.lazyPut<MainHomeController>(() => MainHomeController(), fenix: true);
   }
 }

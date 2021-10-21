@@ -25,8 +25,8 @@ class ServiceController extends GetxController {
 
   loginUserEP() {
     ConstantCall.auth.loginUser(
-        email: email!.value.text,
-        password: passwords!.value.text,
+        email: email!.value.text.trim(),
+        password: passwords!.value.text.trim(),
         route: RouteString.mainhomePage!);
   }
 

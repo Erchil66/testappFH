@@ -34,11 +34,10 @@ class CloudFirebaseFireStoreFunctions {
     }).whenComplete(() => readDataofUser(uid: uid));
   }
 
-  static Future readDataofUser({String? uid}) async =>
-      await CollectionFireStore.collectionReferenceUsers
-          .doc(uid)
-          .get()
-          .then((value) {
-        StoragePref.setDataJson(value);
-      });
+  static readDataofUser({String? uid}) async {
+    final list =
+        await CollectionFireStore.collectionReferenceUsers.doc(uid).get();
+    final List<dynamic> mapMe = [list.data() as Map<String, dynamic>];
+    return mapMe.map((e) => User.fromJson(e)).toList();
+  }
 }

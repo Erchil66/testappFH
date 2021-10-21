@@ -1,5 +1,7 @@
 import 'package:apptestfh/constatnts/constants.dart';
 import 'package:apptestfh/firestore_service/cloud_functions.dart';
+import 'package:apptestfh/models/user.dart';
+import 'package:apptestfh/route/route_string.dart';
 import 'package:apptestfh/storage/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,19 +13,37 @@ class MainHomeController extends GetxController {
   final firstNameString = '...'.obs;
   final lastNameString = '...'.obs;
   final phoneString = '...'.obs;
+
+  final box = GetStorage();
+
   @override
-  void onReady() {
-    print(ConstantCall.firebaseAuth.currentUser!.uid);
-    CloudFirebaseFireStoreFunctions.readDataofUser(
-            uid: ConstantCall.firebaseAuth.currentUser!.uid)
-        .whenComplete(() => storageGetDetail());
-    super.onReady();
+  void onInit() {
+    getListtrail();
+    super.onInit();
   }
 
   final TextEditingController? email = TextEditingController(),
       firstName = TextEditingController(),
       lastName = TextEditingController(),
       phone = TextEditingController();
+
+  final List<User> listUser = <User>[].obs;
+
+  getListtrail() async {
+    try {
+      final result = await CloudFirebaseFireStoreFunctions.readDataofUser(
+          uid: ConstantCall.firebaseAuth.currentUser!.uid);
+      listUser.assignAll(result);
+    } finally {
+      listUser.map((e) {
+        box.write('u.f', e.firstName);
+        box.write('u.l', e.lastName);
+        box.write('u.e', e.email);
+        box.write('u.p', e.phone);
+      }).toList();
+      getStored();
+    }
+  }
 
   updateUserDetailWithEmailAlso() async {
     ConstantCall.auth.updateUserDetailincludeEmail(
@@ -40,11 +60,20 @@ class MainHomeController extends GetxController {
         uid: ConstantCall.firebaseAuth.currentUser!.uid);
   }
 
-  storageGetDetail() {
-    emailString(StoragePref.getIt(holder: StoragePref.email!));
-    firstNameString(StoragePref.getIt(holder: StoragePref.firstName!));
-    lastNameString(StoragePref.getIt(holder: StoragePref.lastName!));
-    phoneString(StoragePref.getIt(holder: StoragePref.phone!));
+  getStored() {
+    firstNameString(box.read('u.f'));
+    lastNameString(box.read('u.l'));
+    emailString(box.read('u.e'));
+    phoneString(box.read('u.p'));
+  }
+
+  signOutNowOkay() {
+    box.remove('u.f');
+    box.remove('u.l');
+    box.remove('u.e');
+    box.remove('u.p');
+    ConstantCall.firebaseAuth.signOut().then(
+        (value) => Get.offNamedUntil(RouteString.loginPage!, (route) => false));
   }
 
   @override

@@ -24,11 +24,11 @@ class RoutePages {
         page: () => RegisterPage(),
         binding: ServiceBindingAuth()),
     GetPage(
-        name: RouteString.mainhomePage!,
-        transition: Transition.leftToRight,
-        transitionDuration: 450.milliseconds,
-        curve: Curves.easeIn,
-        page: () => const MainViewPage(),
-        binding: MainHomeBinding()),
+      name: RouteString.mainhomePage!,
+      transition: Transition.leftToRight,
+      transitionDuration: 450.milliseconds,
+      curve: Curves.easeIn,
+      page: () => MainViewPage(),
+    )
   ];
 }

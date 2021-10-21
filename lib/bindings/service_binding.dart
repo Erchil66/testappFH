@@ -4,6 +4,6 @@ import 'package:get/get.dart';
 class ServiceBindingAuth extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => ServiceController(), fenix: true);
+    Get.lazyPut<ServiceController>(() => ServiceController(), fenix: true);
   }
 }
